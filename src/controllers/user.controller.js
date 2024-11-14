@@ -53,4 +53,22 @@ const login = async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 };
-export { signup, login };
+
+const update = async (req, res) => {
+	const { username } = req.body;
+	if (!req.userId) {
+		return res.status(401).json({ message: "Unauthorized" });
+	}
+	if (!username) {
+		return res.status(400).json({ message: "Invalid data" });
+	}
+	try {
+		const user = await Users.findById(req.userId);
+		user.username = username;
+		await user.save();
+		res.status(200).json(user);
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
+export { signup, login, update };
