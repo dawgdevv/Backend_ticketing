@@ -1,10 +1,10 @@
+import mongoose from "mongoose";
 import dotenv from "dotenv";
 import Event from "../models/events.model.js";
-import connectDB from "../db/db.js";
 
 dotenv.config();
 
-const sampleEvents = [
+const Events = [
 	{
 		name: "Jaipur Literature Festival",
 		date: new Date("2025-01-25"),
@@ -59,13 +59,18 @@ const sampleEvents = [
 
 const seedEvents = async () => {
 	try {
-		await connectDB();
+		await mongoose.connect(
+			"mongodb+srv://nishantraj:nishant24@cluster0.0p0yq.mongodb.net/auth_db?retryWrites=true&w=majority",
+			{}
+		);
+
 		await Event.deleteMany();
-		await Event.insertMany(sampleEvents);
-		console.log("Data Imported!");
+		await Event.insertMany(Events);
+
+		console.log("Events seeded successfully");
 		process.exit();
 	} catch (error) {
-		console.error("Error importing data");
+		console.error("Error seeding events", error);
 		process.exit(1);
 	}
 };
