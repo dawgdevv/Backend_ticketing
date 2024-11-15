@@ -1,5 +1,10 @@
 import express from "express";
-import { signup, login, update } from "../controllers/user.controller.js";
+import {
+	signup,
+	login,
+	update,
+	logout,
+} from "../controllers/user.controller.js";
 import {
 	signupValidation,
 	loginValidation,
@@ -10,5 +15,6 @@ const router = express.Router();
 
 router.post("/signup", signupValidation, signup);
 router.post("/login", loginValidation, login);
-router.post("/update", updateValidation, update);
+router.post("/logout", logout);
+router.post("/", updateValidation, update);
 export default router;

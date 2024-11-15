@@ -1,4 +1,5 @@
 import express from "express";
+import session from "express-session";
 import connectDB from "./db/db.js";
 import userRoutes from "./routes/user.routes.js";
 import cors from "cors";
@@ -13,9 +14,22 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
-app.use(cors());
+app.use(
+	cors({
+		origin: "http://localhost:5173",
+		credentials: true,
+	})
+);
 
 connectDB();
+
+app.use(
+	session({
+		secret: process.env.SESSION_SECRET,
+		resave: false,
+		saveUninitialized: false,
+	})
+);
 
 app.use("/auth", userRoutes);
 app.use("/events", eventRoutes);

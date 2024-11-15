@@ -54,6 +54,15 @@ const login = async (req, res) => {
 	}
 };
 
+const logout = (req, res) => {
+	req.session.destroy((err) => {
+		if (err) {
+			return res.status(500).json({ message: err.message });
+		}
+		res.clearCookie("connect.sid");
+		res.json({ message: "Logged out" });
+	});
+};
 const update = async (req, res) => {
 	const { username } = req.body;
 	if (!req.userId) {
@@ -71,4 +80,4 @@ const update = async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 };
-export { signup, login, update };
+export { signup, login, logout, update };
