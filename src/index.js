@@ -4,6 +4,8 @@ import userRoutes from "./routes/user.routes.js";
 import cors from "cors";
 import dotenv from "dotenv";
 import eventRoutes from "./routes/event.routes.js";
+import paymentRoutes from "./routes/payment.routes.js";
+import ticketRoutes from "./routes/ticket.routes.js";
 
 dotenv.config();
 
@@ -17,6 +19,8 @@ connectDB();
 
 app.use("/auth", userRoutes);
 app.use("/events", eventRoutes);
+app.use("/payment", paymentRoutes);
+app.use("/tickets", ticketRoutes);
 
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);

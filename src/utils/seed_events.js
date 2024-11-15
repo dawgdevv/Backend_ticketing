@@ -11,6 +11,7 @@ const Events = [
 		location: "Jaipur, Rajasthan, India",
 		description:
 			"An annual literary extravaganza bringing together authors, thinkers, and readers from around the world.",
+		price: 500, // Price in rupees
 	},
 	{
 		name: "Rajasthan International Folk Festival",
@@ -18,6 +19,7 @@ const Events = [
 		location: "Mehrangarh Fort, Jaipur, Rajasthan, India",
 		description:
 			"A celebration of Rajasthani and global folk music in the stunning backdrop of Mehrangarh Fort.",
+		price: 1000, // Price in rupees
 	},
 	{
 		name: "Jaipur Tech Expo",
@@ -26,6 +28,7 @@ const Events = [
 			"Jaipur Exhibition and Convention Center, Jaipur, Rajasthan, India",
 		description:
 			"A tech event showcasing the latest innovations in software, hardware, and emerging technologies.",
+		price: 1500, // Price in rupees
 	},
 	{
 		name: "Pink City Food Carnival",
@@ -33,6 +36,7 @@ const Events = [
 		location: "Central Park, Jaipur, Rajasthan, India",
 		description:
 			"A culinary festival celebrating diverse food cultures with top chefs and local cuisine.",
+		price: 200, // Price in rupees
 	},
 	{
 		name: "Jaipur Art and Craft Fair",
@@ -40,6 +44,7 @@ const Events = [
 		location: "Jawahar Kala Kendra, Jaipur, Rajasthan, India",
 		description:
 			"An art fair promoting traditional Rajasthani crafts and modern art, with exhibitions and live art demos.",
+		price: 300, // Price in rupees
 	},
 	{
 		name: "Desert Rock Music Fest",
@@ -47,6 +52,7 @@ const Events = [
 		location: "Jaipur Polo Grounds, Jaipur, Rajasthan, India",
 		description:
 			"A rock music festival featuring live performances by popular bands and indie musicians from India.",
+		price: 800, // Price in rupees
 	},
 	{
 		name: "Jaipur International Film Festival",
@@ -54,6 +60,7 @@ const Events = [
 		location: "Inox Crystal Palm, Jaipur, Rajasthan, India",
 		description:
 			"A film festival showcasing cinema from around the world, with screenings, panel discussions, and workshops.",
+		price: 1200, // Price in rupees
 	},
 ];
 
