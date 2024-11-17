@@ -8,6 +8,7 @@ const eventSchema = new Schema({
 	price: { type: Number, required: true },
 	tickets: [{ type: Schema.Types.ObjectId, ref: "Ticket" }],
 	auctionTickets: [{ type: Schema.Types.ObjectId, ref: "AuctionTicket" }],
+	image: { type: String },
 });
 
 const Event = mongoose.model("Event", eventSchema);
