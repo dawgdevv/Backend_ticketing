@@ -1,5 +1,5 @@
 # Ticket Booking App
-# (Nishant Dev Dhruv)
+# (Nishant/ Dev/ Dhruv)
 
 ## Overview
 
