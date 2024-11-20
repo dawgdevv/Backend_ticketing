@@ -1,4 +1,5 @@
 import Users from "../models/user.model.js";
+import Tickets from "../models/tickets.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 const signup = async (req, res) => {
@@ -38,7 +39,7 @@ const login = async (req, res) => {
 
 		console.log("JWT_SECRET:", process.env.JWT_SECRET);
 		const token = jwt.sign(
-			{ emial: user.email, id: user._id },
+			{ email: user.email, id: user._id },
 			process.env.JWT_SECRET,
 			{ expiresIn: "24h" }
 		);
@@ -80,4 +81,18 @@ const update = async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 };
-export { signup, login, logout, update };
+
+const getUserTickets = async (req, res) => {
+	const userId = req.user.id;
+
+	try {
+		const user = await Users.findById(userId).populate("tickets");
+		if (!user) {
+			return res.status(404).json({ message: "User not found" });
+		}
+		res.status(200).json(user.tickets);
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
+export { signup, login, logout, update, getUserTickets };
