@@ -10,7 +10,7 @@ export const bookTicket = async (req, res) => {
 
 	try {
 		// Find the event by ID
-		// Add this line to log the event ID
+
 		const event = await Event.findById(eventId);
 		if (!event) {
 			return res.status(404).json({ message: "Event not found" });
