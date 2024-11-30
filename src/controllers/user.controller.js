@@ -80,4 +80,22 @@ const update = async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 };
-export { signup, login, logout, update };
+
+const getUserTickets = async (req, res) => {
+	try {
+		const user = await Users.findById(req.user.id).populate({
+			path: "tickets",
+			populate: { path: "event", model: "Event" },
+		});
+		console.log("User:", user.id);
+
+		if (!user) {
+			return res.status(404).json({ message: "User not found" });
+		}
+		res.status(200).json(user.tickets);
+	} catch (error) {
+		console.log("Error fetching user tickets:", error);
+		res.status(500).json({ message: error.message });
+	}
+};
+export { signup, login, logout, update, getUserTickets };
