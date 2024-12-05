@@ -64,6 +64,8 @@ export const resellTicket = async (req, res) => {
 		if (!ticket) {
 			return res.status(404).json({ message: "Ticket not found" });
 		}
+		ticket.resale = true;
+		await ticket.save();
 
 		const resellTicket = new ResellTicket({
 			ticket: ticketId,
@@ -99,6 +101,57 @@ export const resellTicket = async (req, res) => {
 		});
 	} catch (error) {
 		console.error("Error reselling ticket:", error);
+		res.status(500).json({ message: error.message });
+	}
+};
+
+export const getresellTickets = async (req, res) => {
+	try {
+		const resellTickets = await ResellTicket.find({}).populate({
+			path: "ticket",
+			populate: [
+				{ path: "event", model: "Event" },
+				{ path: "owner", model: "User" },
+			],
+		});
+
+		console.log("Resell tickets:", resellTickets);
+		res.status(200).json(resellTickets);
+	} catch (error) {
+		console.error("Error fetching resell tickets:", error);
+		res.status(500).json({ message: error.message });
+	}
+};
+
+export const buyresellTickets = async (req, res) => {
+	const { resellTicketId } = req.body;
+	const userId = req.user.id;
+
+	try {
+		const resellticket =
+			await ResellTicket.findById(resellTicketId).populate("ticket");
+		if (!resellticket) {
+			return res.status(404).json({ message: "Resell ticket not found" });
+		}
+
+		const ticket = await Ticket.findById(resellticket.ticket._id);
+		if (!ticket) {
+			return res.status(404).json({ message: "Ticket not found" });
+		}
+
+		ticket.owner = userId;
+		ticket.resale = false;
+		await ticket.save();
+
+		await ResellTicket.findByIdAndDelete(resellTicketId);
+
+		const user = await User.findById(userId);
+		user.tickets.push(ticket._id);
+		await user.save();
+
+		res.status(200).json({ message: "Ticket purchased successfully" });
+	} catch (error) {
+		console.error("Error buying resell ticket:", error);
 		res.status(500).json({ message: error.message });
 	}
 };
