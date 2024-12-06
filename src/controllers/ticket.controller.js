@@ -3,6 +3,7 @@ import User from "../models/user.model.js";
 import Event from "../models/events.model.js";
 import ResellTicket from "../models/resell.model.js";
 import Marketplace from "../models/market.model.js";
+import AuctionTicket from "../models/auction.model.js";
 
 export const bookTicket = async (req, res) => {
 	const { eventId, quantity, seats } = req.body;
@@ -128,30 +129,77 @@ export const buyresellTickets = async (req, res) => {
 	const userId = req.user.id;
 
 	try {
-		const resellticket =
+		const resellTicket =
 			await ResellTicket.findById(resellTicketId).populate("ticket");
-		if (!resellticket) {
+		if (!resellTicket) {
 			return res.status(404).json({ message: "Resell ticket not found" });
 		}
 
-		const ticket = await Ticket.findById(resellticket.ticket._id);
+		// Check if the user is trying to buy their own ticket
+		if (resellTicket.seller.toString() === userId) {
+			return res.status(403).json({ message: "You can't buy your own ticket" });
+		}
+
+		const ticket = await Ticket.findById(resellTicket.ticket._id);
 		if (!ticket) {
 			return res.status(404).json({ message: "Ticket not found" });
 		}
 
+		// Transfer ownership of the ticket
 		ticket.owner = userId;
 		ticket.resale = false;
 		await ticket.save();
 
+		// Remove the resell ticket from the marketplace
 		await ResellTicket.findByIdAndDelete(resellTicketId);
 
+		// Update the user's ticket list
 		const user = await User.findById(userId);
 		user.tickets.push(ticket._id);
 		await user.save();
 
-		res.status(200).json({ message: "Ticket purchased successfully" });
+		res.status(200).json({ message: "Ticket purchased successfully", ticket });
 	} catch (error) {
 		console.error("Error buying resell ticket:", error);
+		res.status(500).json({ message: error.message });
+	}
+};
+
+export const createAuction = async (req, res) => {
+	const { ticketId, startingBid, auctionEnd } = req.body;
+	const userId = req.user.id;
+
+	try {
+		const ticket = await Ticket.findById(ticketId).populate("event");
+		if (!ticket) {
+			return res.status(404).json({ message: "Ticket not found" });
+		}
+
+		const auctionTicket = new AuctionTicket({
+			event: ticket.event,
+			ticket: ticket._id,
+			seat: ticket.seats[0], // Assuming single seat for simplicity
+			startingBid,
+			auctionEnd,
+			organizer: userId,
+		});
+
+		await auctionTicket.save();
+		res
+			.status(201)
+			.json({ message: "Auction created successfully", auctionTicket });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
+
+export const getAuctionItems = async (req, res) => {
+	try {
+		const auctionItems = await AuctionTicket.find({}).populate(
+			"event ticket organizer"
+		);
+		res.status(200).json(auctionItems);
+	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
 };
